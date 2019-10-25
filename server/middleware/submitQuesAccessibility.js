@@ -8,6 +8,7 @@ module.exports = async (req, res, next) => {
     const tokenData = await jwt.verify(access_token, 'jwt_secret_key');
     console.log(tokenData);
     if (tokenData.role === 'researcher') {
+      req.user = tokenData;
       next();
     } else {
       return res.status(401).json({

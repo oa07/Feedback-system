@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const config = require('./config/config');
 const app = require('./config/express');
+console.log(config.mongodbHost);
 
 mongoose.connect(config.mongodbHost, {
   useNewUrlParser: true,

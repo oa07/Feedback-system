@@ -2,19 +2,22 @@ const mongoose = require('mongoose');
 
 const { Schema } = mongoose;
 
-const researcherQuestionType = new Schema({
+const ResearcherQuestionSetSchema = new Schema({
   researcherID: {
     type: String,
     required: true
   },
-  numberOfQuestion: {
+  numberOfQuestions: {
     type: String,
     required: true
   },
-  questions: [{
-    questionType: { type: String, required: true },
-    answerType: { type: String, required: true }
+  questionAnswer: [{
+    question: { type: String, required: true },
+    ansType: { type: String, required: true },
+    options: [{
+      type: String
+    }]
   }]
 });
 
-module.exports.researcherQuestionType = mongoose.model('questionType', researcherQuestionType);
+module.exports.ResearcherQuestionSetModel = mongoose.model('questionSetType', ResearcherQuestionSetSchema);

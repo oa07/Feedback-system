@@ -8,7 +8,8 @@ const envSchema = Joi.object({
 		.allow(["development", "production", "test", "provision"])
 		.default("development"),
 	PORT: Joi.number().default(3000),
-	MONGODB_HOST: Joi.string().required()
+	MONGODB_HOST: Joi.string().required(),
+	JWT_SECRET: Joi.string().required()
 })
 	.unknown()
 	.required();
@@ -19,5 +20,6 @@ if (error) throw new Error(`Config validation error: ${error.message}`);
 module.exports = {
 	env: validatedEnv.NODE_ENV,
 	port: validatedEnv.PORT,
-	mongodbHost: validatedEnv.MONGODB_HOST
+	mongodbHost: validatedEnv.MONGODB_HOST,
+	jwtSecret: validatedEnv.JWT_SECRET
 };

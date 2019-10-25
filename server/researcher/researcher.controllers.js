@@ -6,7 +6,6 @@ module.exports.submitQuestions = (req, res) => {
   if (userAnswerType.length !== numberOfQuestion) {
 
   }
-  console.log(userAnswerType, correctAnswerType);
   for (let i = 0; i < userAnswerType.length; i++) {
     console.log()
     if (userAnswerType[i].type === correctAnswerType[i].type) {

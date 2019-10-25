@@ -4,6 +4,9 @@ const bcrypt = require("bcrypt");
 const { Schema } = mongoose;
 
 const AccountSchema = new Schema({
+	name: {
+		type: String
+	},
 	email: {
 		type: String,
 		required: true,
@@ -38,8 +41,6 @@ const AccountSchema = new Schema({
 	}
 });
 
-<<<<<<< HEAD
-=======
 AccountSchema.methods.comparePassword = function(candidatePassword, cb) {
 	bcrypt.compare(candidatePassword, this.password, (err, isMatch) => {
 		if (err) {
@@ -48,6 +49,4 @@ AccountSchema.methods.comparePassword = function(candidatePassword, cb) {
 		cb(null, isMatch);
 	});
 };
-
->>>>>>> 601d1ad97d9ad3652e028373cf9888e0f444b5be
 module.exports.AccountModel = mongoose.model("Account", AccountSchema);

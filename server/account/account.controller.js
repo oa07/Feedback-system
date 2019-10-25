@@ -30,6 +30,7 @@ module.exports.register = async (req, res, next) => {
 		if (user) return res.status(400).json({ message: "Email already Exists" });
 		const hashedPassword = await bcrypt.hash(data.password, 10);
 		const newUser = new AccountModel({
+			name: data.name,
 			email: data.email,
 			phoneNumber: data.phoneNumber,
 			role: data.role,
@@ -48,7 +49,6 @@ module.exports.register = async (req, res, next) => {
 // POST /auth/login
 // input => email, password
 module.exports.login = async (req, res, next) => {
-<<<<<<< HEAD
 	const { error } = loginDataValidation(req.body);
 	if (error) return res.status(400).json(error.details.map(err => err.message));
 
@@ -61,7 +61,6 @@ module.exports.login = async (req, res, next) => {
 	} catch (err) {
 		return res.status(500).json({ message: "Internal Server Error" });
 	}
-=======
 	try {
 		const { error } = loginDataValidation(req.body);
 		if (error)
@@ -72,7 +71,6 @@ module.exports.login = async (req, res, next) => {
 		next(error);
 	}
 	next();
->>>>>>> 601d1ad97d9ad3652e028373cf9888e0f444b5be
 };
 
 // GET /auth/allUserInfo

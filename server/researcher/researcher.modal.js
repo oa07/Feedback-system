@@ -3,6 +3,10 @@ const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
 const researcherQuestionType = new Schema({
+  researcherID: {
+    type: String,
+    required: true
+  },
   numberOfQuestion: {
     type: String,
     required: true

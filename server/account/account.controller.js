@@ -56,7 +56,7 @@ module.exports.login = async (req, res, next) => {
 		if (error)
 			return res.status(400).json(error.details.map(err => err.message));
 		const payLoad = {
-			email: req.user.email
+			email: req.user
 		};
 		const accessToken = jwt.sign(payLoad, config.jwtSecret, {
 			expiresIn: "1d"
@@ -72,7 +72,7 @@ module.exports.login = async (req, res, next) => {
 // only admin can access this page..
 module.exports.singleAccountInfo = async (req, res) => {
 	try {
-		const users = await AuthModel.find();
+		const users = await AccountModel.find();
 		return res.status(200).json({ users });
 	} catch (err) {
 		return res.status(500).json({ message: "Internal Server Error" });

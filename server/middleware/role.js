@@ -1,25 +1,31 @@
 const jwt = require("jsonwebtoken");
-
+const config = require("../../config/config");
 module.exports.auth = async (req, res, next) => {
 	try {
 		const bearerHeader = req.headers.authorization;
-		console.log(bearerHeader);
-		if (typeof bearerHeader !== "undefined") {
-			const access_token = bearerHeader.split(" ")[1];
-			const tokenData = await jwt.verify(access_token, "jwt_secret_key");
-			req.user = tokenData;
-			next();
-		}
-	} catch (err) {
-		return res.status(500).json({
-			message: "internal Server Error"
-		});
+		const access_token = bearerHeader.split(" ")[1];
+		const tokenData = jwt.verify(access_token, config.jwtSecret);
+		req.user = tokenData;
+		next();
+	} catch (error) {
+		next(error);
 	}
+	// try {
+	// 	const bearerHeader = req.headers.authorization;
+	// 	if (typeof bearerHeader !== "undefined") {
+	// 		const access_token = bearerHeader.split(" ")[1];
+	// 		const tokenData = jwt.verify(accessToken, config.jwtSecret);
+	// 		console.log(tokenData);
+	// 	}
+	// } catch (err) {
+	// 	return res.status(500).json({
+	// 		message: "internal Server Error"
+	// 	});
+	// }
 };
 
 module.exports.researcherAccess = async (req, res, next) => {
 	try {
-		console.log(req.user);
 		if (req.user.role === "researcher") {
 			next();
 		} else {

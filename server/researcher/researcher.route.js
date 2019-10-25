@@ -1,9 +1,12 @@
 const express = require("express");
 const controllers = require("./researcher.controller");
-const submitAccess = require("../middleware/submitQuesAccessibility");
+const { auth, researcherAccess } = require("../middleware/role");
 const router = express.Router();
 
-router.post("/submitQuestions", submitAccess, controllers.submitQuestions);
-router.post("/login", controllers.login);
+router.post(
+	"/submitQuestions",
+	[auth, researcherAccess],
+	controllers.submitQuestions
+);
 
 module.exports = router;

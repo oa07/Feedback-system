@@ -2,6 +2,10 @@ const joi = require("@hapi/joi");
 
 module.exports.signupDataValidation = data => {
 	const compareWith = {
+		name: joi
+			.string()
+			.min(7)
+			.required(),
 		email: joi
 			.string()
 			.email({ minDomainSegments: 2 })

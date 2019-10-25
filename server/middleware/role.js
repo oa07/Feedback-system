@@ -1,15 +1,14 @@
 const jwt = require("jsonwebtoken");
-const config = require('../../config/config');
-
+const config = require("../../config/config");
 module.exports.auth = async (req, res, next) => {
 	try {
 		const bearerHeader = req.headers.authorization;
-		console.log(bearerHeader);
+
 		if (typeof bearerHeader !== "undefined") {
 			const access_token = bearerHeader.split(" ")[1];
 			const tokenData = await jwt.verify(access_token, config.jwtSecret);
-			req.user = tokenData;
-			console.log(tokenData);
+			req.user = tokenData.email;
+			console.log(tokenData.email);
 			console.log("DONE1");
 			next();
 		}
@@ -22,7 +21,6 @@ module.exports.auth = async (req, res, next) => {
 
 module.exports.researcherAccess = async (req, res, next) => {
 	try {
-		console.log(req.user);
 		if (req.user.role === "researcher") {
 			next();
 		} else {

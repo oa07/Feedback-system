@@ -1,7 +1,7 @@
 const { vaildData } = require("./researcher.dummyData");
 const { loginDataValidation } = require("./researcher.validation");
 const { AudienceQuestionSubmitModel } = require('../audience/audience.model')
-
+const { ResearcherQuestionSetModel } = require('./researcher.model');
 const jwt = require("jsonwebtoken");
 
 module.exports.login = async (req, res) => {
@@ -38,7 +38,12 @@ module.exports.submitQuestions = async (req, res) => {
 	const { numberOfQuestions } = req.body;
 	const QuestionSet = {};
 	QuestionSet.numberOfQuestions = numberOfQuestions;
-	QuestionSet.researcherID = req.user.id;
+
+	console.log('____________');
+	console.log(req.user);
+	console.log('____________');
+
+	QuestionSet.researcherID = req.user._id;
 	QuestionSet.tag = req.body.tag;
 	QuestionSet.questionAnswer = [];
 	for (let i = 0; i < numberOfQuestions; i++) {
@@ -89,7 +94,6 @@ module.exports.submitQuestions = async (req, res) => {
 };
 
 
-// not tested
 module.exports.seeAudienceReview = async (req, res) => {
 	const researcherID = req.user._id;
 	const allReview = await AudienceQuestionSubmitModel.find({ researcherID });

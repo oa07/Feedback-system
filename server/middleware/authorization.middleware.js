@@ -19,7 +19,6 @@ module.exports = (req, res, next) => {
 			});
 		}
 	}
-
 	if (hasMultiplePlaces) {
 		return res.status(400).send({
 			statusCode: 400,

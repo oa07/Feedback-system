@@ -1,7 +1,13 @@
+<<<<<<< HEAD
 const { researcherQuestions, numberOfQuestion, correctAnswerType, userAnswerType, vaildData } = require('./researcher.dummyData');
 const { loginDataValidation } = require('./researcher.validation');
 const jwt = require('jsonwebtoken');
 const { ResearcherQuestionSetModel } = require('./researcher.model');
+=======
+const { numberOfQuestion, correctAnswerType, userAnswerType, vaildData } = require('./researcher.dummyData');
+const { loginDataValidation } = require('./researcher.validation');
+const jwt = require('jsonwebtoken');
+>>>>>>> 601d1ad97d9ad3652e028373cf9888e0f444b5be
 
 module.exports.login = async (req, res) => {
   const { email, password } = req.body;

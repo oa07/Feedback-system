@@ -1,7 +1,10 @@
-const bcrypt = require("bcryptjs");
+const bcrypt = require("bcrypt");
 const passport = require("passport");
 const { AccountModel } = require("./account.model");
-const { signupDataValidation } = require("./account.validation");
+const {
+	signupDataValidation,
+	loginDataValidation
+} = require("./account.validation");
 
 /*
   HTTP Status Codes
@@ -45,6 +48,7 @@ module.exports.register = async (req, res, next) => {
 // POST /auth/login
 // input => email, password
 module.exports.login = async (req, res, next) => {
+<<<<<<< HEAD
 	const { error } = loginDataValidation(req.body);
 	if (error) return res.status(400).json(error.details.map(err => err.message));
 
@@ -57,6 +61,18 @@ module.exports.login = async (req, res, next) => {
 	} catch (err) {
 		return res.status(500).json({ message: "Internal Server Error" });
 	}
+=======
+	try {
+		const { error } = loginDataValidation(req.body);
+		if (error)
+			return res.status(400).json(error.details.map(err => err.message));
+
+		return res.json({ success: true, data: req.user });
+	} catch (error) {
+		next(error);
+	}
+	next();
+>>>>>>> 601d1ad97d9ad3652e028373cf9888e0f444b5be
 };
 
 // GET /auth/allUserInfo

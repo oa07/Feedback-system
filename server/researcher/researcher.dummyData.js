@@ -39,6 +39,7 @@ const vaildData = [
   }
 ]
 
+<<<<<<< HEAD
 
 let data = {};
 data.numberOfQuestions = Math.floor(Math.random() * 10) + 1;
@@ -56,6 +57,8 @@ for (let i = 1; i <= data.numberOfQuestions; i++) {
 }
 
 module.exports.researcherQuestions = data;
+=======
+>>>>>>> 601d1ad97d9ad3652e028373cf9888e0f444b5be
 module.exports.vaildData = vaildData;
 module.exports.numberOfQuestion = numberOfQuestion;
 module.exports.correctAnswerType = correctAnswerType;

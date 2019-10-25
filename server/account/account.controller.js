@@ -75,7 +75,7 @@ module.exports.login = async (req, res, next) => {
 
 // GET /auth/allUserInfo
 // only admin can access this page..
-module.exports.allUserInfo = async (req, res) => {
+module.exports.singleAccountInfo = async (req, res) => {
 	try {
 		const users = await AuthModel.find();
 		return res.status(200).json({ users });

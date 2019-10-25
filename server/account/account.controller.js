@@ -1,6 +1,8 @@
 const bcrypt = require("bcrypt");
 const passport = require("passport");
+const jwt = require("jsonwebtoken");
 const { AccountModel } = require("./account.model");
+const config = require("../../config/config");
 const {
 	signupDataValidation,
 	loginDataValidation
@@ -49,24 +51,17 @@ module.exports.register = async (req, res, next) => {
 // POST /auth/login
 // input => email, password
 module.exports.login = async (req, res, next) => {
-	const { error } = loginDataValidation(req.body);
-	if (error) return res.status(400).json(error.details.map(err => err.message));
-
-	try {
-		passport.authenticate("login", async (err, token, user, info) => {
-			if (err) return res.status(400).json(err);
-			if (info) return res.status(400).json(info);
-			return res.status(200).json({ token, user });
-		})(req, res, next);
-	} catch (err) {
-		return res.status(500).json({ message: "Internal Server Error" });
-	}
 	try {
 		const { error } = loginDataValidation(req.body);
 		if (error)
 			return res.status(400).json(error.details.map(err => err.message));
-
-		return res.json({ success: true, data: req.user });
+		const payLoad = {
+			email: req.user.email
+		};
+		const accessToken = jwt.sign(payLoad, config.jwtSecret, {
+			expiresIn: "1d"
+		});
+		return res.json({ success: true, data: req.user, token: accessToken });
 	} catch (error) {
 		next(error);
 	}

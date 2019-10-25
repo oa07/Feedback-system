@@ -1,5 +1,7 @@
 const { vaildData } = require("./researcher.dummyData");
 const { loginDataValidation } = require("./researcher.validation");
+const { AudienceQuestionSubmitModel } = require('../audience/audience.model')
+
 const jwt = require("jsonwebtoken");
 
 module.exports.login = async (req, res) => {
@@ -78,10 +80,28 @@ module.exports.submitQuestions = async (req, res) => {
 		}
 		QuestionSet.questionAnswer.push(questionAnswer);
 	}
-
+	QuestionSet.willShowTill = Date.now() + 3600000;
 	const questionType = new ResearcherQuestionSetModel(QuestionSet);
 	await questionType.save();
 	return res.status(200).json({
 		questionType
 	});
 };
+
+
+// not tested
+module.exports.seeAudienceReview = async (req, res) => {
+	const researcherID = req.user._id;
+	const allReview = await AudienceQuestionSubmitModel.find({ researcherID });
+	return res.status(200).json({
+		reviews: allReview
+	})
+}
+
+module.exports.seeValidAudienceReview = async (req, res) => {
+	const researcherID = req.user._id;
+	const allReview = await AudienceQuestionSubmitModel.find({ approved: true });
+	return res.status(200).json({
+		validReviews: allReview
+	})
+}

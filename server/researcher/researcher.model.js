@@ -24,7 +24,10 @@ const ResearcherQuestionSetSchema = new Schema({
     options: [{
       type: String
     }]
-  }]
+  }],
+  willShowTill: {
+    type: Date
+  }
 });
 
 module.exports.ResearcherQuestionSetModel = mongoose.model('questionSetType', ResearcherQuestionSetSchema);

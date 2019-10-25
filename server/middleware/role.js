@@ -1,4 +1,5 @@
 const jwt = require("jsonwebtoken");
+const config = require('../../config/config');
 
 module.exports.auth = async (req, res, next) => {
 	try {
@@ -6,8 +7,10 @@ module.exports.auth = async (req, res, next) => {
 		console.log(bearerHeader);
 		if (typeof bearerHeader !== "undefined") {
 			const access_token = bearerHeader.split(" ")[1];
-			const tokenData = await jwt.verify(access_token, "jwt_secret_key");
+			const tokenData = await jwt.verify(access_token, config.jwtSecret);
 			req.user = tokenData;
+			console.log(tokenData);
+			console.log("DONE1");
 			next();
 		}
 	} catch (err) {
@@ -37,6 +40,8 @@ module.exports.researcherAccess = async (req, res, next) => {
 
 module.exports.audienceAccess = async (req, res, next) => {
 	try {
+		console.log(req.user);
+
 		if (req.user.role === "audience") {
 			next();
 		} else {

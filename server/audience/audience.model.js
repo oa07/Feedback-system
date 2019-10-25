@@ -7,9 +7,16 @@ const AudienceQuestionSubmitSchema = new Schema({
     type: String,
     required: true
   },
+  researcherID: {
+    type: String,
+    required: true
+  },
   QuestionSetID: {
     type: String,
     required: true
+  },
+  approved: {
+    type: Boolean
   },
   answers: [{
     type: String

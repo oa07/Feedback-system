@@ -9,8 +9,6 @@ const envSchema = Joi.object({
     .default('development'),
   PORT: Joi.number().default(3000),
   MONGODB_HOST: Joi.string().required(),
-  EMAIL_ID: Joi.string().email(),
-  EMAIL_PASSWORD: Joi.string()
 })
   .unknown()
   .required();
@@ -21,8 +19,6 @@ if (error) throw new Error(`Config validation error: ${error.message}`);
 module.exports = {
   env: validatedEnv.NODE_ENV,
   port: validatedEnv.PORT,
-  mongodbHost: validatedEnv.MONGODB_HOST,
-  emailID: validatedEnv.EMAIL_ID,
-  emailPassword: validatedEnv.EMAIL_PASSWORD
+  mongodbHost: validatedEnv.MONGODB_HOST
 };
 

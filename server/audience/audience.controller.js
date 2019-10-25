@@ -7,3 +7,12 @@ module.exports.showListOfQuestions = async (req, res) => {
     QuestionSets: allQuestionSets
   })
 }
+
+module.exports.rateQuestionList = async (req, res) => {
+  const selectedQuestionSet = await ResearcherQuestionSetModel.findOne({ _id: req.query.id });
+  selectedQuestionSet.stars.push(req.query.star);
+  await selectedQuestionSet.save();
+  return res.status(200).json({
+    updatedQuestionSet: selectedQuestionSet
+  })
+}

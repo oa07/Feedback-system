@@ -15,6 +15,9 @@ const ResearcherQuestionSetSchema = new Schema({
     type: String,
     required: true
   },
+  stars: [{
+    type: String
+  }],
   questionAnswer: [{
     question: { type: String, required: true },
     ansType: { type: String, required: true },

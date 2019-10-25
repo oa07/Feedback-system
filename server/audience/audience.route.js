@@ -6,5 +6,5 @@ const router = express.Router();
 
 console.log('hi');
 router.get('/showListOfQuestions', [auth, audienceAccess], controllers.showListOfQuestions);
-
+router.post('/rateQuestionList', [auth, audienceAccess], controllers.rateQuestionList);
 module.exports = router;

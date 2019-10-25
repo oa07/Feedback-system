@@ -7,6 +7,10 @@ const ResearcherQuestionSetSchema = new Schema({
     type: String,
     required: true
   },
+  tag: {
+    type: String,
+    required: true
+  },
   numberOfQuestions: {
     type: String,
     required: true

@@ -42,6 +42,7 @@ const vaildData = [
 
 let data = {};
 data.numberOfQuestions = Math.floor(Math.random() * 10) + 1;
+data.tag = 'music';
 const ansTypes = ['textbox', 'textarea', 'radiobox', 'checkbox'];
 for (let i = 1; i <= data.numberOfQuestions; i++) {
   data[`ques${i}`] = 'here is the question';

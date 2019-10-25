@@ -1,7 +1,7 @@
 const { researcherQuestions, numberOfQuestion, correctAnswerType, userAnswerType, vaildData } = require('./researcher.dummyData');
 const { loginDataValidation } = require('./researcher.validation');
 const jwt = require('jsonwebtoken');
-const { ResearcherQuestionSetModel } = require('./researcher.modal');
+const { ResearcherQuestionSetModel } = require('./researcher.model');
 
 module.exports.login = async (req, res) => {
   const { email, password } = req.body;
@@ -40,6 +40,7 @@ module.exports.submitQuestions = async (req, res) => {
   const QuestionSet = {};
   QuestionSet.numberOfQuestions = numberOfQuestions;
   QuestionSet.researcherID = req.user.id;
+  QuestionSet.tag = researcherQuestions.tag;
   QuestionSet.questionAnswer = [];
   for (let i = 0; i < numberOfQuestions; i++) {
     let questionAnswer = {};

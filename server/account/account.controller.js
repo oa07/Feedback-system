@@ -48,6 +48,20 @@ module.exports.register = async (req, res, next) => {
 // POST /auth/login
 // input => email, password
 module.exports.login = async (req, res, next) => {
+<<<<<<< HEAD
+	const { error } = loginDataValidation(req.body);
+	if (error) return res.status(400).json(error.details.map(err => err.message));
+
+	try {
+		passport.authenticate("login", async (err, token, user, info) => {
+			if (err) return res.status(400).json(err);
+			if (info) return res.status(400).json(info);
+			return res.status(200).json({ token, user });
+		})(req, res, next);
+	} catch (err) {
+		return res.status(500).json({ message: "Internal Server Error" });
+	}
+=======
 	try {
 		const { error } = loginDataValidation(req.body);
 		if (error)
@@ -58,6 +72,7 @@ module.exports.login = async (req, res, next) => {
 		next(error);
 	}
 	next();
+>>>>>>> 601d1ad97d9ad3652e028373cf9888e0f444b5be
 };
 
 // GET /auth/allUserInfo

@@ -36,33 +36,33 @@ module.exports.login = async (req, res) => {
 }
 
 module.exports.submitQuestions = async (req, res) => {
-  const { numberOfQuestions } = researcherQuestions;
+  const { numberOfQuestions } = req.body;
   const QuestionSet = {};
   QuestionSet.numberOfQuestions = numberOfQuestions;
   QuestionSet.researcherID = req.user.id;
-  QuestionSet.tag = researcherQuestions.tag;
+  QuestionSet.tag = req.body.tag;
   QuestionSet.questionAnswer = [];
   for (let i = 0; i < numberOfQuestions; i++) {
     let questionAnswer = {};
-    if (researcherQuestions[`ques${i + 1}`] === undefined || researcherQuestions[`ques${i + 1}`] === '') {
+    if (req.body[`ques${i + 1}`] === undefined || req.body[`ques${i + 1}`] === '') {
       // show error
     } else {
-      questionAnswer.question = researcherQuestions[`ques${i + 1}`];
+      questionAnswer.question = req.body[`ques${i + 1}`];
     }
-    if (researcherQuestions[`ansType${i + 1}`] === undefined || researcherQuestions[`ansType${i + 1}`] === '') {
+    if (req.body[`ansType${i + 1}`] === undefined || req.body[`ansType${i + 1}`] === '') {
       // show error
     } else {
-      questionAnswer.ansType = researcherQuestions[`ansType${i + 1}`];
+      questionAnswer.ansType = req.body[`ansType${i + 1}`];
     }
-    if (researcherQuestions[`ansType${i + 1}`] !== 'textarea' && researcherQuestions[`ansType${i + 1}`] !== 'textbox') {
+    if (req.body[`ansType${i + 1}`] !== 'textarea' && req.body[`ansType${i + 1}`] !== 'textbox') {
       const options = [];
-      if (researcherQuestions[`options${i + 1}`] === undefined || researcherQuestions[`options${i + 1}`].length === 0) {
+      if (req.body[`options${i + 1}`] === undefined || req.body[`options${i + 1}`].length === 0) {
         // show error
-      } else if (typeof researcherQuestions[`options${i + 1}`] === 'string') {
-        options.push(researcherQuestions[`options${i + 1}`]);
+      } else if (typeof req.body[`options${i + 1}`] === 'string') {
+        options.push(req.body[`options${i + 1}`]);
       } else {
-        for (let j = 0; j < researcherQuestions[`options${i + 1}`].length; j++) {
-          options.push(researcherQuestions[`options${i + 1}`][j]);
+        for (let j = 0; j < req.body[`options${i + 1}`].length; j++) {
+          options.push(req.body[`options${i + 1}`][j]);
         }
       }
       questionAnswer.options = options;

@@ -16,3 +16,7 @@ module.exports.rateQuestionList = async (req, res) => {
     updatedQuestionSet: selectedQuestionSet
   })
 }
+
+module.exports.answerQuestions = async (req, res) => {
+
+}

@@ -10,6 +10,6 @@ const accountControllers = require("./account.controller");
 
 router.post("/register", accountControllers.register);
 router.post("/login", requireLogin, accountControllers.login);
-router.post("/alluserlist", accountControllers.allUserInfo);
+router.post("/single-account-info", accountControllers.singleAccountInfo);
 
 module.exports = router;

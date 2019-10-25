@@ -18,5 +18,11 @@ module.exports.rateQuestionList = async (req, res) => {
 }
 
 module.exports.answerQuestions = async (req, res) => {
-
+  const userID = req.user._id;
+  const userData = [];
+  const QuestionSetID = req.params.questionSetID;
+  const NumberOfQuestions = req.params.numberOfQuestions;
+  for (let i = 0; i < NumberOfQuestions; i++) {
+    userData.push(req.body[`ans${i + 1}`])
+  }
 }

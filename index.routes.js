@@ -4,7 +4,6 @@ const researcherRoutes = require("./server/researcher/researcher.route");
 <<<<<<< HEAD
 const audienceRoutes = require('./server/audience/audience.route');
 const router = express.Router();
-
 router.use("/researcher", researcherRoutes);
 router.use('/audience', audienceRoutes);
 =======

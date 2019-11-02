@@ -1,5 +1,5 @@
 # Account APIs
----
+
 The list of API's the account module.
 
 ### Authentication API

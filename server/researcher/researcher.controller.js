@@ -1,111 +1,110 @@
-const { vaildData } = require("./researcher.dummyData");
-const { loginDataValidation } = require("./researcher.validation");
-const { AudienceQuestionSubmitModel } = require('../audience/audience.model')
-const { ResearcherQuestionSetModel } = require('./researcher.model');
-const jwt = require("jsonwebtoken");
+const { AudienceQuestionSubmitModel } = require("../audience/audience.model");
+const { ResearcherQuestionSetModel } = require("./researcher.model");
 
-module.exports.login = async (req, res) => {
-	const { email, password } = req.body;
-
-	const { error } = loginDataValidation(req.body);
-	if (error) return res.status(400).json(error.details.map(err => err.message));
-
-	let getIndex = -1;
-	for (let i = 0; i < 3; i++) {
-		if (email === vaildData[i].email && password === vaildData[i].password) {
-			getIndex = i;
-			break;
-		}
-	}
-	if (getIndex === -1) {
-		return res.status(400).json({
-			success: false
-		});
-	} else {
-		const accessToken = await jwt.sign(vaildData[getIndex], "jwt_secret_key", {
-			expiresIn: "3600m"
-		});
-
-		return res.status(200).json({
-			success: true,
-			accessToken,
-			user: vaildData[getIndex]
-		});
-	}
+const undefinedOrEmpty = data => {
+  return data === undefined || data === "";
 };
 
+// numberOfQuestions, willShowTill, tag, ques1, ansType1, options1 => from input
+// user ID => from token
 module.exports.submitQuestions = async (req, res) => {
-	const { numberOfQuestions } = req.body;
-	const QuestionSet = {};
-	QuestionSet.numberOfQuestions = numberOfQuestions;
+  try {
+    const { numberOfQuestions, tag } = req.body;
+    const willShowTill = new Date(
+      Date.now() + parseFloat(req.body.willShowTill) * 24 * 60 * 60 * 1000
+    );
+    const QuestionSet = {
+      numberOfQuestions,
+      tag,
+      willShowTill,
+      researcherID: req.user._id,
+      questionAnswer: []
+    };
 
-	console.log('____________');
-	console.log(req.user);
-	console.log('____________');
+    const numberOfQuestionsInt = parseInt(req.body.numberOfQuestions, 10);
+    for (let i = 0; i < numberOfQuestionsInt; i++) {
+      let questionAnswer = {};
 
-	QuestionSet.researcherID = req.user._id;
-	QuestionSet.tag = req.body.tag;
-	QuestionSet.questionAnswer = [];
-	for (let i = 0; i < numberOfQuestions; i++) {
-		let questionAnswer = {};
-		if (
-			req.body[`ques${i + 1}`] === undefined ||
-			req.body[`ques${i + 1}`] === ""
-		) {
-			// show error
-		} else {
-			questionAnswer.question = req.body[`ques${i + 1}`];
-		}
-		if (
-			req.body[`ansType${i + 1}`] === undefined ||
-			req.body[`ansType${i + 1}`] === ""
-		) {
-			// show error
-		} else {
-			questionAnswer.ansType = req.body[`ansType${i + 1}`];
-		}
-		if (
-			req.body[`ansType${i + 1}`] !== "textarea" &&
-			req.body[`ansType${i + 1}`] !== "textbox"
-		) {
-			const options = [];
-			if (
-				req.body[`options${i + 1}`] === undefined ||
-				req.body[`options${i + 1}`].length === 0
-			) {
-				// show error
-			} else if (typeof req.body[`options${i + 1}`] === "string") {
-				options.push(req.body[`options${i + 1}`]);
-			} else {
-				for (let j = 0; j < req.body[`options${i + 1}`].length; j++) {
-					options.push(req.body[`options${i + 1}`][j]);
-				}
-			}
-			questionAnswer.options = options;
-		}
-		QuestionSet.questionAnswer.push(questionAnswer);
-	}
-	QuestionSet.willShowTill = Date.now() + 3600000;
-	const questionType = new ResearcherQuestionSetModel(QuestionSet);
-	await questionType.save();
-	return res.status(200).json({
-		questionType
-	});
+      if (undefinedOrEmpty(req.body[`ques${i + 1}`])) {
+        return res.status(400).json({
+          success: false,
+          message: `question ${i + 1} is empty !!`
+        });
+      } else {
+        questionAnswer.question = req.body[`ques${i + 1}`];
+      }
+      if (undefinedOrEmpty(req.body[`ansType${i + 1}`])) {
+        return res.status(400).json({
+          success: false,
+          message: `Answer type of question ${i + 1} is empty !!`
+        });
+      } else {
+        questionAnswer.ansType = req.body[`ansType${i + 1}`];
+      }
+      if (
+        req.body[`ansType${i + 1}`] !== "textarea" &&
+        req.body[`ansType${i + 1}`] !== "textbox"
+      ) {
+        const options = [];
+        if (
+          req.body[`options${i + 1}`] === undefined ||
+          req.body[`options${i + 1}`].length === 0
+        ) {
+          return res.status(400).json({
+            success: false,
+            message: `There should be some options in question ${i + 1} !!`
+          });
+        } else if (typeof req.body[`options${i + 1}`] === "string") {
+          options.push(req.body[`options${i + 1}`]);
+        } else {
+          for (let j = 0; j < req.body[`options${i + 1}`].length; j++) {
+            options.push(req.body[`options${i + 1}`][j]);
+          }
+        }
+        questionAnswer.options = options;
+      }
+      QuestionSet.questionAnswer.push(questionAnswer);
+    }
+    const QuestionSetDB = new ResearcherQuestionSetModel(QuestionSet);
+    await QuestionSetDB.save();
+    return res.status(200).json({
+      success: true,
+      QuestionSet: QuestionSetDB
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "Internal Server Error",
+      error
+    });
+  }
 };
-
 
 module.exports.seeAudienceReview = async (req, res) => {
-	const researcherID = req.user._id;
-	const allReview = await AudienceQuestionSubmitModel.find({ researcherID });
-	return res.status(200).json({
-		reviews: allReview
-	})
-}
+  try {
+    const researcherID = req.user._id;
+    const QuestionSetID = req.query.questionSetID;
+    const review = await AudienceQuestionSubmitModel.find({
+      researcherID,
+      QuestionSetID
+    });
+    return res.status(200).json({
+      success: true,
+      reviews: review
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "Internal Server Error",
+      error
+    });
+  }
+};
 
-module.exports.seeValidAudienceReview = async (req, res) => {
-	const researcherID = req.user._id;
-	const allReview = await AudienceQuestionSubmitModel.find({ approved: true });
-	return res.status(200).json({
-		validReviews: allReview
-	})
-}
+// module.exports.seeValidAudienceReview = async (req, res) => {
+//   const researcherID = req.user._id;
+//   const allReview = await AudienceQuestionSubmitModel.find({ approved: true });
+//   return res.status(200).json({
+//     validReviews: allReview
+//   });
+// };

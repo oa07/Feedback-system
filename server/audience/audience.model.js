@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
 const { Schema } = mongoose;
 
@@ -16,11 +16,17 @@ const AudienceQuestionSubmitSchema = new Schema({
     required: true
   },
   approved: {
-    type: Boolean
+    type: Boolean,
+    default: false
   },
-  answers: [{
-    type: String
-  }]
+  answers: [
+    {
+      type: String
+    }
+  ]
 });
 
-module.exports.AudienceQuestionSubmitModel = mongoose.model('audienceQuesAnswer', AudienceQuestionSubmitSchema);
+module.exports.AudienceQuestionSubmitModel = mongoose.model(
+  "audienceQuesAnswer",
+  AudienceQuestionSubmitSchema
+);

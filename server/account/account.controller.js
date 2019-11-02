@@ -30,11 +30,11 @@ module.exports.register = async (req, res, next) => {
     }
     let user = await AccountModel.findOne({ email: data.email });
     if (user) return res.status(400).json({ message: "Email already Exists" });
-    console.log(data, user);
+    // console.log(data, user);
     user = await AccountModel.findOne({ phoneNumber: data.phoneNumber });
     if (user)
       return res.status(400).json({ message: "Phone Number already Exists" });
-    console.log(data, user);
+    // console.log(data, user);
 
     const hashedPassword = await bcrypt.hash(data.password, 10);
     const newUser = new AccountModel({

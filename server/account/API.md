@@ -38,11 +38,11 @@ The list of API's the account module.
 }
 ```
 #### 2. Login API endpoint
-**URL:** `localhost:3000/api/v1/account/login`
-**METHOD:** `POST`
-**ACCESS:** `public`
-**Input Fields:** `email, password`
-**Input Example:** 
+- **URL:** `localhost:3000/api/v1/account/login`
+- **METHOD:** `POST`
+- **ACCESS:** `public`
+- **Input Fields:** `email, password`
+- **Input Example:** 
 ```
 {
     "email": "kingfahad0802@mail.com",

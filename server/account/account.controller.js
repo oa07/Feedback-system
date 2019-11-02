@@ -30,6 +30,12 @@ module.exports.register = async (req, res, next) => {
     }
     let user = await AccountModel.findOne({ email: data.email });
     if (user) return res.status(400).json({ message: "Email already Exists" });
+    console.log(data, user);
+    user = await AccountModel.findOne({ phoneNumber: data.phoneNumber });
+    if (user)
+      return res.status(400).json({ message: "Phone Number already Exists" });
+    console.log(data, user);
+
     const hashedPassword = await bcrypt.hash(data.password, 10);
     const newUser = new AccountModel({
       name: data.name,
@@ -39,6 +45,7 @@ module.exports.register = async (req, res, next) => {
       password: hashedPassword
     });
     await newUser.save();
+    newUser.password = undefined;
     return res
       .status(200)
       .json({ message: "Registration Successful", data: newUser });
@@ -61,7 +68,7 @@ module.exports.login = async (req, res, next) => {
     const accessToken = jwt.sign(payLoad, config.jwtSecret, {
       expiresIn: "1d"
     });
-    return res.json({ success: true, data: req.user, token: accessToken });
+    return res.json({ success: true, accessToken });
   } catch (error) {
     next(error);
   }

@@ -4,9 +4,9 @@ const { auth, researcherAccess } = require("../middleware/role");
 const router = express.Router();
 
 router.post(
-	"/submitQuestions",
-	[auth, researcherAccess],
-	controllers.submitQuestions
+  "/submitQuestions",
+  [auth, researcherAccess],
+  controllers.submitQuestions
 );
 
 router.get('/seeAudienceReview',

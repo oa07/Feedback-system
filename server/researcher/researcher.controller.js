@@ -80,6 +80,7 @@ module.exports.submitQuestions = async (req, res) => {
   }
 };
 
+// all audience's answer
 module.exports.seeAudienceReview = async (req, res) => {
   try {
     const researcherID = req.user._id;
@@ -101,10 +102,57 @@ module.exports.seeAudienceReview = async (req, res) => {
   }
 };
 
-// module.exports.seeValidAudienceReview = async (req, res) => {
-//   const researcherID = req.user._id;
-//   const allReview = await AudienceQuestionSubmitModel.find({ approved: true });
-//   return res.status(200).json({
-//     validReviews: allReview
-//   });
-// };
+// only valid audience's answer
+module.exports.seeValidAudienceReview = async (req, res) => {
+  try {
+    const validReviewInAParticularQuestionSet = await AudienceQuestionSubmitModel.find(
+      {
+        researcherID: req.user._id,
+        QuestionSetID: req.query.questionSetID,
+        approved: true
+      }
+    );
+    return res.status(200).json({
+      success: true,
+      validReview: validReviewInAParticularQuestionSet
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "Internal Server Error",
+      error
+    });
+  }
+};
+
+module.exports.top200AudienceInAQuestionSet = async (req, res) => {
+  try {
+    const QuestionSetID = req.query.questionSetID;
+
+    let SubmittedAnswer = await AudienceQuestionSubmitModel.find({
+      approved: true,
+      QuestionSetID
+    }).sort({ _id: -1 });
+
+    let map = new Map();
+    let top200Users = [];
+    for (let i = 0; i < SubmittedAnswer.length; i++) {
+      if (map.has(SubmittedAnswer[i].audienceID)) continue;
+      top200Users.push(SubmittedAnswer[i].audienceID);
+      map.set(SubmittedAnswer[i].audienceID, true);
+      if (map.size === 200) {
+        break;
+      }
+    }
+    return res.status(200).json({
+      success: true,
+      top200Users
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "Internal Server Error",
+      error
+    });
+  }
+};

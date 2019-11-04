@@ -2,6 +2,11 @@ const {
   ResearcherQuestionSetModel
 } = require("../researcher/researcher.model");
 const { AudienceQuestionSubmitModel } = require("./audience.model");
+const {
+  thankYouMsgFromResearcherToAudience
+} = require("../../config/sendingEmail");
+
+const { AccountModel } = require("../account/account.model");
 
 module.exports.showListOfQuestions = async (req, res) => {
   try {
@@ -56,6 +61,7 @@ module.exports.answerQuestions = async (req, res) => {
     });
     if (questionSet) {
       const { numberOfQuestions, researcherID } = questionSet;
+      const researcherInfo = await AccountModel.find({ _id: researcherID });
       const answers = [];
       const NumberOfQuestionsInt = parseInt(numberOfQuestions, 10);
       for (let i = 0; i < NumberOfQuestionsInt; i++) {
@@ -70,10 +76,15 @@ module.exports.answerQuestions = async (req, res) => {
         answers
       });
       await AudiencesAnswer.save();
-
+      const emailResponse = await thankYouMsgFromResearcherToAudience(
+        researcherInfo.email,
+        req.user.email,
+        req.user.name
+      );
       return res.status(200).json({
         success: true,
-        AudiencesAnswer
+        AudiencesAnswer,
+        emailResponse
       });
     } else {
       return res.status(400).json({
@@ -81,6 +92,29 @@ module.exports.answerQuestions = async (req, res) => {
         message: "No Question Set Found in this ID"
       });
     }
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "Internal Server Error",
+      error
+    });
+  }
+};
+
+module.exports.howManyUserReached = async (req, res) => {
+  try {
+    const QuestionSetID = req.params.questionSetID;
+    const answers = await AudienceQuestionSubmitModel.find({ QuestionSetID });
+    let map = new Map();
+    let counter = 0;
+    for (let i = 0; i < answers.length; i++) {
+      if (map.has(answers[i].audienceID)) continue;
+      counter++;
+    }
+    return res.status(200).json({
+      success: true,
+      howManyUserReachedInThisQuestionSet: counter
+    });
   } catch (error) {
     return res.status(500).json({
       success: false,

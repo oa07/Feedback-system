@@ -8,72 +8,87 @@ const { AccountModel } = require("../account/account.model");
 module.exports.allQuestionsSet = async (req, res) => {
   try {
     const questionList = await ResearcherQuestionSetModel.find({});
-    return res.json({ success: true, questionList });
+    return res.status(200).json({ success: true, questionList });
   } catch (error) {
-    next(error);
+    return res.status(500).json({
+      success: false,
+      message: "Internal Server Error",
+      error
+    });
   }
 };
 
-// // NOT TESTED (1)
-// module.exports.seeDisapprovedUsers = async (req, res) => {
-//   try {
-//     const allAudience = await AccountModel.find({ role: "audience" });
-//     let disApprovedUsers = [];
-//     for (let i = 0; i < allAudience.length; i++) {
-//       let posts = await AudienceQuestionSubmitModel.find({
-//         audienceID: allAudience[i]._id,
-//         approved: true
-//       });
-//       if (posts.length === 0) {
-//         disApprovedUsers.push(allAudience[i]._id);
-//       }
-//     }
-//     return res.status(200).json({
-//       disApprovedUsers
-//     });
-//   } catch (error) {
-//     return res.status(500).json({
-//       error
-//     });
-//   }
-// };
+module.exports.seeResponsesInAParticularQuestionSet = async (req, res) => {
+  try {
+    const review = await AudienceQuestionSubmitModel.find({
+      QuestionSetID: req.query.questionSetID
+    });
+    return res.status(200).json({
+      success: true,
+      review
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "Internal Server Error",
+      error
+    });
+  }
+};
 
-// // NOT TESTED (2)
-// module.exports.audienceListedin200 = async (req, res) => {
-//   try {
-//     let userAnswered = await AudienceQuestionSubmitModel.find({
-//       approved: true
-//     }).sort({ _id: -1 });
+module.exports.seeDisapprovedUsers = async (req, res) => {
+  try {
+    const audiences = await AccountModel.find({ role: "audience" });
+    const validAudiences = await AudienceQuestionSubmitModel.find({
+      approved: true
+    });
+    let map = new Map();
+    for (let i = 0; i < validAudiences.length; i++) {
+      if (map.has(validAudiences[i].audienceID)) continue;
+      map.set(validAudiences[i].audienceID, true);
+    }
+    let disapprovedAudiences = [];
+    for (let i = 0; i < audiences.length; i++) {
+      if (map.has(audiences[i]._id)) continue;
+      disapprovedAudiences.push(audiences[i]._id);
+    }
+    return res.status(200).json({
+      success: true,
+      disapprovedAudiences
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "Internal Server Error",
+      error
+    });
+  }
+};
 
-//     let map = new Map();
-//     let topUsers = [];
-//     for (let i = 0; i < userAnswered.length; i++) {
-//       if (map.has(userAnswered[i].audienceID)) continue;
-//       topUsers.push(userAnswered[i].audienceID);
-//       map.set(userAnswered[i].audienceID, "#");
-//       if (map.size === 200) {
-//         break;
-//       }
-//     }
-//     return res.status(200).json({
-//       topUsers
-//     });
-//   } catch (error) {
-//     return res.status(500).json({
-//       error
-//     });
-//   }
-// };
-
-// // NOT TESTED (3)
-// module.exports.promotionalMailToUsers = async (req, res) => {
-//   const allAudience = await AccountModel.find({ role: "audience" });
-//   const { message } = req.body;
-//   for (let i = 0; i < allAudience.length; i++) {
-//     const emailResponse = await promotionalMailByAdminToAllUsers(
-//       allAudience[i].name,
-//       allAudience[i].email,
-//       message
-//     );
-//   }
-// };
+module.exports.promotionalMailToUsers = async (req, res) => {
+  try {
+    let audiences = await AccountModel.find({ role: "audience" });
+    const researchers = await AccountModel.find({ role: "researcher" });
+    const users = [...audiences, ...researchers];
+    const { message } = req.body;
+    let responses = [];
+    for (let i = 0; i < users.length; i++) {
+      const emailResponse = await promotionalMailByAdminToAllUsers(
+        users[i].name,
+        users[i].email,
+        message
+      );
+      responses.push(emailResponse.response);
+    }
+    return res.status(200).json({
+      success: true,
+      emailResponses: responses
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "Internal Server Error",
+      error
+    });
+  }
+};

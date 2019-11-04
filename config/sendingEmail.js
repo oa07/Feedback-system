@@ -64,3 +64,21 @@ module.exports.promotionalMailByAdminToAllUsers = async (
 
   return transporter.sendMail(mailOptions);
 };
+
+module.exports.thankYouMsgFromResearcherToAudience = async (
+  researcherMailID,
+  AudienceMailID,
+  AudienceName
+) => {
+  const mailOptions = {
+    from: researcherMailID,
+    to: AudienceMailID,
+    subject: "Greetings",
+    html: `
+      <h1> Hi ${AudienceName}, </h1>
+      <p> Thank you for completing the survey </p>
+    `
+  };
+
+  return transporter.sendMail(mailOptions);
+};

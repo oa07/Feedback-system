@@ -3,14 +3,11 @@ const config = require("../../config/config");
 module.exports.auth = async (req, res, next) => {
   try {
     const bearerHeader = req.headers.authorization;
-    console.log("bearer Header", bearerHeader);
 
     if (typeof bearerHeader !== "undefined") {
       const access_token = bearerHeader.split(" ")[1];
       const tokenData = await jwt.verify(access_token, config.jwtSecret);
       req.user = tokenData.email;
-      // orvi vai... kindly correct this..
-      console.log(tokenData);
       next();
     }
   } catch (err) {
@@ -23,6 +20,10 @@ module.exports.auth = async (req, res, next) => {
 module.exports.researcherAccess = async (req, res, next) => {
   try {
     if (req.user.role === "researcher") {
+      console.log("_______________________");
+      console.log(req.user);
+      console.log("_______________________");
+      console.log("OKAY !!! Authorized !!!");
       next();
     } else {
       return res.status(401).json({
@@ -40,6 +41,11 @@ module.exports.researcherAccess = async (req, res, next) => {
 module.exports.audienceAccess = async (req, res, next) => {
   try {
     if (req.user.role === "audience") {
+      console.log("_______________________");
+      console.log(req.user);
+      console.log("_______________________");
+      console.log("OKAY !!! Authorized !!!");
+
       next();
     } else {
       return res.status(401).json({
@@ -57,6 +63,11 @@ module.exports.audienceAccess = async (req, res, next) => {
 module.exports.adminAccess = async (req, res, next) => {
   try {
     if (req.user.role === "admin") {
+      console.log("_______________________");
+      console.log(req.user);
+      console.log("_______________________");
+      console.log("OKAY !!! Authorized !!!");
+
       next();
     } else {
       return res.status(401).json({

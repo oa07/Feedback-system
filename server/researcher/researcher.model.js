@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
 const { Schema } = mongoose;
 
@@ -15,16 +15,28 @@ const ResearcherQuestionSetSchema = new Schema({
     type: String,
     required: true
   },
-  stars: [{
-    type: String
-  }],
-  questionAnswer: [{
-    question: { type: String, required: true },
-    ansType: { type: String, required: true },
-    options: [{
+  stars: [
+    {
       type: String
-    }]
-  }]
+    }
+  ],
+  questionAnswer: [
+    {
+      question: { type: String, required: true },
+      ansType: { type: String, required: true },
+      options: [
+        {
+          type: String
+        }
+      ]
+    }
+  ],
+  willShowTill: {
+    type: Date
+  }
 });
 
-module.exports.ResearcherQuestionSetModel = mongoose.model('questionSetType', ResearcherQuestionSetSchema);
+module.exports.ResearcherQuestionSetModel = mongoose.model(
+  "questionSet",
+  ResearcherQuestionSetSchema
+);

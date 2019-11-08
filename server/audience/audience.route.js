@@ -14,4 +14,10 @@ router.post(
   [auth, audienceAccess],
   controllers.rateQuestionList
 );
+router.post(
+  "/answerQuestions/:questionSetID",
+  [auth, audienceAccess],
+  controllers.answerQuestions
+);
+
 module.exports = router;

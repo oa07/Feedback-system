@@ -9,4 +9,9 @@ router.post(
   controllers.submitQuestions
 );
 
+router.get('/seeAudienceReview',
+	[auth, researcherAccess],
+	controllers.seeAudienceReview
+)
+
 module.exports = router;

@@ -1,13 +1,15 @@
-const { AudienceQuestionSubmitModel } = require("../audience/audience.model");
-const { ResearcherQuestionSetModel } = require("./researcher.model");
+const { AudienceQuestionSubmitModel } = require('../audience/audience.model');
+const { ResearcherQuestionSetModel } = require('./researcher.model');
 
 const undefinedOrEmpty = data => {
-  return data === undefined || data === "";
+  return data === undefined || data === '';
 };
 
 // numberOfQuestions, willShowTill, tag, ques1, ansType1, options1 => from input
 // user ID => from token
 module.exports.submitQuestions = async (req, res) => {
+  console.log('hey');
+  console.log(req.body);
   try {
     const { numberOfQuestions, tag } = req.body;
     const willShowTill = new Date(
@@ -42,8 +44,8 @@ module.exports.submitQuestions = async (req, res) => {
         questionAnswer.ansType = req.body[`ansType${i + 1}`];
       }
       if (
-        req.body[`ansType${i + 1}`] !== "textarea" &&
-        req.body[`ansType${i + 1}`] !== "textbox"
+        req.body[`ansType${i + 1}`] !== 'textarea' &&
+        req.body[`ansType${i + 1}`] !== 'textbox'
       ) {
         const options = [];
         if (
@@ -54,7 +56,7 @@ module.exports.submitQuestions = async (req, res) => {
             success: false,
             message: `There should be some options in question ${i + 1} !!`
           });
-        } else if (typeof req.body[`options${i + 1}`] === "string") {
+        } else if (typeof req.body[`options${i + 1}`] === 'string') {
           options.push(req.body[`options${i + 1}`]);
         } else {
           for (let j = 0; j < req.body[`options${i + 1}`].length; j++) {
@@ -74,7 +76,7 @@ module.exports.submitQuestions = async (req, res) => {
   } catch (error) {
     return res.status(500).json({
       success: false,
-      message: "Internal Server Error",
+      message: 'Internal Server Error',
       error
     });
   }
@@ -96,7 +98,7 @@ module.exports.seeAudienceReview = async (req, res) => {
   } catch (error) {
     return res.status(500).json({
       success: false,
-      message: "Internal Server Error",
+      message: 'Internal Server Error',
       error
     });
   }
@@ -119,7 +121,7 @@ module.exports.seeValidAudienceReview = async (req, res) => {
   } catch (error) {
     return res.status(500).json({
       success: false,
-      message: "Internal Server Error",
+      message: 'Internal Server Error',
       error
     });
   }
@@ -151,7 +153,7 @@ module.exports.top200AudienceInAQuestionSet = async (req, res) => {
   } catch (error) {
     return res.status(500).json({
       success: false,
-      message: "Internal Server Error",
+      message: 'Internal Server Error',
       error
     });
   }

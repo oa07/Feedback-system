@@ -1,11 +1,11 @@
-const nodemailer = require("nodemailer");
-const config = require("./config");
+const nodemailer = require('nodemailer');
+const config = require('./config');
 
 // For Gmail, you need to Allow less secure apps to access account setting in your google account - by default this settings is off and you simply turn it on.
 // https://stackoverflow.com/a/45479968
 
 const transporter = nodemailer.createTransport({
-  service: "gmail",
+  service: 'gmail',
   auth: {
     user: config.emailID,
     pass: config.emailPassword
@@ -20,7 +20,7 @@ module.exports.sendEmailForResetPassword = async (username, emailID, token) => {
   const mailOptions = {
     from: config.emailID,
     to: emailID,
-    subject: "Generated Token For Reset Password",
+    subject: 'Generated Token For Reset Password',
     html: `
       <h1> Hi ${username}, </h1>
       <h2> Copy This Link and paste it into POSTMAN </h2>
@@ -36,7 +36,7 @@ module.exports.sendEmailForVerifyAccount = async (username, emailID, token) => {
   const mailOptions = {
     from: config.emailID,
     to: emailID,
-    subject: "Generated Token For Account Verification",
+    subject: 'Generated Token For Account Verification',
     html: `
       <h1> Hi ${username}, </h1>
       <h2> Copy This Link and paste it into POSTMAN </h2>
@@ -55,7 +55,7 @@ module.exports.promotionalMailByAdminToAllUsers = async (
   const mailOptions = {
     from: config.emailID,
     to: emailID,
-    subject: "A promotional mail",
+    subject: 'A promotional mail',
     html: `
       <h1> Hi ${username}, </h1>
       <p> ${message} </p>
@@ -73,10 +73,10 @@ module.exports.thankYouMsgFromResearcherToAudience = async (
   const mailOptions = {
     from: researcherMailID,
     to: AudienceMailID,
-    subject: "Greetings",
+    subject: 'Greetings',
     html: `
       <h1> Hi ${AudienceName}, </h1>
-      <p> Thank you for completing the survey </p>
+      <h3> Thank you for completing the survey </h3>
     `
   };
 

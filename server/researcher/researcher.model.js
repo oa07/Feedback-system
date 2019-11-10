@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 
 const { Schema } = mongoose;
 
@@ -33,10 +33,14 @@ const ResearcherQuestionSetSchema = new Schema({
   ],
   willShowTill: {
     type: Date
+  },
+  approved: {
+    type: Boolean,
+    default: false
   }
 });
 
 module.exports.ResearcherQuestionSetModel = mongoose.model(
-  "questionSet",
+  'questionSet',
   ResearcherQuestionSetSchema
 );

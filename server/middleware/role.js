@@ -1,83 +1,88 @@
-const jwt = require("jsonwebtoken");
-const config = require("../../config/config");
+const jwt = require('jsonwebtoken');
+const config = require('../../config/config');
 module.exports.auth = async (req, res, next) => {
   try {
     const bearerHeader = req.headers.authorization;
 
-    if (typeof bearerHeader !== "undefined") {
-      const access_token = bearerHeader.split(" ")[1];
+    if (typeof bearerHeader !== 'undefined') {
+      const access_token = bearerHeader.split(' ')[1];
       const tokenData = await jwt.verify(access_token, config.jwtSecret);
       req.user = tokenData.email;
       next();
+    } else {
+      return res.status(401).json({
+        success: false,
+        message: 'please first sign in !!'
+      });
     }
   } catch (err) {
     return res.status(500).json({
-      message: "internal Server Error"
+      message: 'internal Server Error'
     });
   }
 };
 
 module.exports.researcherAccess = async (req, res, next) => {
   try {
-    if (req.user.role === "researcher") {
-      console.log("_______________________");
+    if (req.user.role === 'researcher') {
+      console.log('_______________________');
       console.log(req.user);
-      console.log("_______________________");
-      console.log("OKAY !!! Authorized !!!");
+      console.log('_______________________');
+      console.log('OKAY !!! Authorized !!!');
       next();
     } else {
       return res.status(401).json({
         success: false,
-        message: "No Access Permission. You are not a researcher"
+        message: 'No Access Permission. You are not a researcher'
       });
     }
   } catch (err) {
     return res.status(500).json({
-      message: "internal Server Error"
+      message: 'internal Server Error'
     });
   }
 };
 
 module.exports.audienceAccess = async (req, res, next) => {
   try {
-    if (req.user.role === "audience") {
-      console.log("_______________________");
+    if (req.user.role === 'audience') {
+      console.log('_______________________');
       console.log(req.user);
-      console.log("_______________________");
-      console.log("OKAY !!! Authorized !!!");
+      console.log('_______________________');
+      console.log('OKAY !!! Authorized !!!');
 
       next();
     } else {
       return res.status(401).json({
         success: false,
-        message: "No Access Permission. You are not a audience"
+        message: 'No Access Permission. You are not a audience'
       });
     }
   } catch (err) {
     return res.status(500).json({
-      message: "internal Server Error"
+      message: 'internal Server Error'
     });
   }
 };
 
 module.exports.adminAccess = async (req, res, next) => {
   try {
-    if (req.user.role === "admin") {
-      console.log("_______________________");
+    if (req.user.role === 'admin') {
+      console.log('_______________________');
       console.log(req.user);
-      console.log("_______________________");
-      console.log("OKAY !!! Authorized !!!");
+      console.log('_______________________');
+      console.log('OKAY !!! Authorized !!!');
 
       next();
     } else {
       return res.status(401).json({
         success: false,
-        message: "No Access Permission. You are not a audience"
+        message: 'No Access Permission. You are not a audience'
       });
     }
   } catch (err) {
     return res.status(500).json({
-      message: "internal Server Error"
+      message: 'internal Server Error'
     });
   }
 };

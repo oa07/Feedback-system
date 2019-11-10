@@ -93,7 +93,6 @@ module.exports.seeAudienceReview = async (req, res) => {
     });
     return res.status(200).json({
       success: true,
-MONGODB_HOST = mongodb+srv://oabd:oabd12345@feedback-db-8sbpq.mongodb.net/feedback?retryWrites=true&w=majority
       reviews: review
     });
   } catch (error) {

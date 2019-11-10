@@ -158,3 +158,103 @@ module.exports.top200AudienceInAQuestionSet = async (req, res) => {
     });
   }
 };
+
+module.exports.totalQuesSetCount = async (req, res, next) => {
+  const review = await AudienceQuestionSubmitModel.find({
+    researcherID: req.user._id
+  });
+  const map = new Map();
+  const counter = {};
+  for (let i = 0; i < review.length; i++) {
+    let id = review[i].QuestionSetID.toString().trim();
+    if (map.has(id)) counter[id]++;
+    else {
+      map.set(id, true);
+      counter[id] = 1;
+    }
+  }
+  const totalSets = await ResearcherQuestionSetModel.find();
+  for (let i = 0; i < totalSets.length; i++) {
+    let id = totalSets[i]._id.toString().trim();
+    if (map.has(id)) continue;
+    map.set(id, true);
+    counter[id] = 0;
+  }
+  return res.status(200).json({
+    success: true,
+    counter
+  });
+};
+
+module.exports.analysisReport = async (req, res, next) => {
+  const quesSetID = req.query.QuestionSetID;
+  const quesSet = await ResearcherQuestionSetModel.findOne({
+    _id: quesSetID
+  });
+  const review = await AudienceQuestionSubmitModel.find({
+    researcherID: req.user._id,
+    QuestionSetID: quesSetID
+  });
+
+  const allQuestionAnswerType = quesSet.questionAnswer;
+
+  const audienceAnswers = [];
+  for (let i = 0; i < review.length; i++) {
+    audienceAnswers.push(review[i].answers);
+  }
+
+  let analysis = [];
+  for (let i = 0; i < allQuestionAnswerType.length; i++) {
+    let ques = allQuestionAnswerType[i]; // options, _id, question, ansType
+    let eachQuestionAnalysis = {
+      QuestionID: ques._id,
+      answers: [],
+      inputBox: false
+    };
+
+    if (ques.ansType === 'textbox' || ques.ansType === 'textarea')
+      eachQuestionAnalysis.inputBox = true;
+
+    let map = new Map();
+    let counter = {};
+
+    for (let j = 0; j < audienceAnswers.length; j++) {
+      const ans = audienceAnswers[j][i];
+      console.log(ans);
+      if (eachQuestionAnalysis.inputBox) {
+        eachQuestionAnalysis.answers.push(ans);
+      } else {
+        if (map.has(ans)) {
+          counter[ans]++;
+        } else {
+          map.set(ans, true);
+          counter[ans] = 1;
+        }
+      }
+    }
+    if (!eachQuestionAnalysis.inputBox) eachQuestionAnalysis.answers = counter;
+    analysis.push(eachQuestionAnalysis);
+  }
+  return res.status(200).json({
+    success: true,
+    analysis
+  });
+};
+
+module.exports.filterBasedOnTag = async (req, res) => {
+  try {
+    const allQuestionSets = await ResearcherQuestionSetModel.find({
+      tag: req.query.tag,
+      researcherID: req.user._id
+    });
+    return res.status(200).json({
+      QuestionSet: allQuestionSets
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: 'Internal Server Error',
+      error
+    });
+  }
+};

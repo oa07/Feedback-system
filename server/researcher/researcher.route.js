@@ -27,4 +27,16 @@ router.get(
   controllers.top200AudienceInAQuestionSet
 );
 
+router.get(
+  '/totalQuesSetCount',
+  [auth, researcherAccess],
+  controllers.totalQuesSetCount
+);
+
+router.get(
+  '/analysisReport',
+  [auth, researcherAccess],
+  controllers.analysisReport
+);
+
 module.exports = router;

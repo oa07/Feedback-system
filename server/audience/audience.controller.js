@@ -1,12 +1,12 @@
 const {
   ResearcherQuestionSetModel
-} = require("../researcher/researcher.model");
-const { AudienceQuestionSubmitModel } = require("./audience.model");
+} = require('../researcher/researcher.model');
+const { AudienceQuestionSubmitModel } = require('./audience.model');
 const {
   thankYouMsgFromResearcherToAudience
-} = require("../../config/sendingEmail");
+} = require('../../config/sendingEmail');
 
-const { AccountModel } = require("../account/account.model");
+const { AccountModel } = require('../account/account.model');
 
 module.exports.showListOfQuestions = async (req, res) => {
   try {
@@ -20,7 +20,7 @@ module.exports.showListOfQuestions = async (req, res) => {
   } catch (error) {
     return res.status(500).json({
       success: false,
-      message: "Internal Server Error",
+      message: 'Internal Server Error',
       error
     });
   }
@@ -40,13 +40,13 @@ module.exports.rateQuestionList = async (req, res) => {
     } else {
       return res.status(400).json({
         success: false,
-        message: "No Question Set Found in this ID"
+        message: 'No Question Set Found in this ID'
       });
     }
   } catch (error) {
     return res.status(500).json({
       success: false,
-      message: "Internal Server Error",
+      message: 'Internal Server Error',
       error
     });
   }
@@ -61,12 +61,12 @@ module.exports.answerQuestions = async (req, res) => {
     });
     if (questionSet) {
       const { numberOfQuestions, researcherID } = questionSet;
-      const researcherInfo = await AccountModel.find({ _id: researcherID });
+      const researcherInfo = await AccountModel.findOne({ _id: researcherID });
       const answers = [];
       const NumberOfQuestionsInt = parseInt(numberOfQuestions, 10);
       for (let i = 0; i < NumberOfQuestionsInt; i++) {
         console.log(req.body[`ans${i + 1}`]);
-        if (req.body[`ans${i + 1}`] === undefined) answers.push("");
+        if (req.body[`ans${i + 1}`] === undefined) answers.push('');
         else answers.push(req.body[`ans${i + 1}`]);
       }
       const AudiencesAnswer = new AudienceQuestionSubmitModel({
@@ -89,13 +89,13 @@ module.exports.answerQuestions = async (req, res) => {
     } else {
       return res.status(400).json({
         success: false,
-        message: "No Question Set Found in this ID"
+        message: 'No Question Set Found in this ID'
       });
     }
   } catch (error) {
     return res.status(500).json({
       success: false,
-      message: "Internal Server Error",
+      message: 'Internal Server Error',
       error
     });
   }
@@ -118,7 +118,7 @@ module.exports.howManyUserReached = async (req, res) => {
   } catch (error) {
     return res.status(500).json({
       success: false,
-      message: "Internal Server Error",
+      message: 'Internal Server Error',
       error
     });
   }

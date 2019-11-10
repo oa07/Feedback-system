@@ -29,6 +29,7 @@ module.exports.register = async (req, res, next) => {
       });
     }
     let user = await AccountModel.findOne({ email: data.email });
+<<<<<<< HEAD
     if (user)
       return res
         .status(400)
@@ -39,6 +40,13 @@ module.exports.register = async (req, res, next) => {
       return res
         .status(400)
         .json({ success: false, message: 'Phone Number already Exists' });
+=======
+    if (user) return res.status(400).json({ message: "Email already Exists" });
+    // console.log(data, user);
+    user = await AccountModel.findOne({ phoneNumber: data.phoneNumber });
+    if (user)
+      return res.status(400).json({ message: "Phone Number already Exists" });
+>>>>>>> 68fd295c3d6fea4ff9c5092fee14d43e37484503
     // console.log(data, user);
 
     const hashedPassword = await bcrypt.hash(data.password, 10);
@@ -51,11 +59,17 @@ module.exports.register = async (req, res, next) => {
     });
     await newUser.save();
     newUser.password = undefined;
+<<<<<<< HEAD
     return res.status(200).json({
       success: true,
       message: 'Registration Successful',
       user: newUser
     });
+=======
+    return res
+      .status(200)
+      .json({ message: "Registration Successful", data: newUser });
+>>>>>>> 68fd295c3d6fea4ff9c5092fee14d43e37484503
   } catch (error) {
     return res.status(500).json({ message: 'Internal Server Error' });
   }

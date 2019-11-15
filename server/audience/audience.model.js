@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 
 const { Schema } = mongoose;
 
@@ -11,7 +11,7 @@ const AudienceQuestionSubmitSchema = new Schema({
     type: String,
     required: true
   },
-  QuestionSetID: {
+  questionSetID: {
     type: String,
     required: true
   },
@@ -19,14 +19,10 @@ const AudienceQuestionSubmitSchema = new Schema({
     type: Boolean,
     default: false
   },
-  answers: [
-    {
-      type: String
-    }
-  ]
+  answers: [{ type: String }]
 });
 
 module.exports.AudienceQuestionSubmitModel = mongoose.model(
-  "audienceQuesAnswer",
+  'audienceQuesAnswer',
   AudienceQuestionSubmitSchema
 );

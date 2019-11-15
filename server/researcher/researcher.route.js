@@ -1,6 +1,7 @@
 const express = require('express');
 const controllers = require('./researcher.controller');
 const { auth, researcherAccess } = require('../middleware/role');
+
 const router = express.Router();
 
 router.post(
@@ -37,6 +38,12 @@ router.get(
   '/analysisReport',
   [auth, researcherAccess],
   controllers.analysisReport
+);
+
+router.get(
+  '/filterBasedOnTag',
+  [auth, researcherAccess],
+  controllers.filterBasedOnTag
 );
 
 module.exports = router;

@@ -1,5 +1,5 @@
-const mongoose = require("mongoose");
-const bcrypt = require("bcryptjs");
+const mongoose = require('mongoose');
+const bcrypt = require('bcryptjs');
 
 const { Schema } = mongoose;
 
@@ -41,7 +41,7 @@ const AccountSchema = new Schema({
   }
 });
 
-AccountSchema.methods.comparePassword = function(candidatePassword, cb) {
+AccountSchema.methods.comparePassword = function (candidatePassword, cb) {
   bcrypt.compare(candidatePassword, this.password, (err, isMatch) => {
     if (err) {
       return cb(err);
@@ -49,4 +49,4 @@ AccountSchema.methods.comparePassword = function(candidatePassword, cb) {
     cb(null, isMatch);
   });
 };
-module.exports.AccountModel = mongoose.model("Account", AccountSchema);
+module.exports.AccountModel = mongoose.model('Account', AccountSchema);

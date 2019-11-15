@@ -1,6 +1,6 @@
 const express = require('express');
-const passportService = require('../services/passport.services');
 const passport = require('passport');
+const passportService = require('../services/passport.services');
 const router = express.Router();
 const { auth, adminAccess } = require('../middleware/role');
 const adminControllers = require('./admin.controller');

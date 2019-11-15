@@ -7,37 +7,24 @@ const ResearcherQuestionSetSchema = new Schema({
     type: String,
     required: true
   },
-  tag: {
-    type: String,
-    required: true
-  },
   numberOfQuestions: {
-    type: String,
+    type: Number,
     required: true
   },
-  stars: [
-    {
-      type: String
-    }
-  ],
-  questionAnswer: [
+  questions: [
     {
       question: { type: String, required: true },
       ansType: { type: String, required: true },
-      options: [
-        {
-          type: String
-        }
-      ]
+      options: [{ type: String }]
     }
   ],
-  willShowTill: {
-    type: Date
-  },
+  tag: [{ type: String, required: true }],
+  willShowTill: { type: Date },
   approved: {
     type: Boolean,
     default: false
-  }
+  },
+  stars: [{ type: Number }]
 });
 
 module.exports.ResearcherQuestionSetModel = mongoose.model(

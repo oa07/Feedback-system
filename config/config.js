@@ -1,12 +1,12 @@
-const Joi = require("@hapi/joi");
-const dotenv = require("dotenv");
+const Joi = require('@hapi/joi');
+const dotenv = require('dotenv');
 
 dotenv.config();
 
 const envSchema = Joi.object({
   NODE_ENV: Joi.string()
-    .allow(["development", "production", "test", "provision"])
-    .default("development"),
+    .allow(['development', 'production', 'test', 'provision'])
+    .default('development'),
   PORT: Joi.number().default(3000),
   MONGODB_HOST: Joi.string().required(),
   JWT_SECRET: Joi.string().required(),

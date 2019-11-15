@@ -1,125 +1,142 @@
 const {
   ResearcherQuestionSetModel
 } = require('../researcher/researcher.model');
-const { AudienceQuestionSubmitModel } = require('./audience.model');
 const {
   thankYouMsgFromResearcherToAudience
 } = require('../../config/sendingEmail');
 
+const asyncHandler = require('../middleware/async');
+const ErrorResponse = require('../utils/errorResponse');
+const { AudienceQuestionSubmitModel } = require('./audience.model');
 const { AccountModel } = require('../account/account.model');
 
-module.exports.showListOfQuestions = async (req, res) => {
-  try {
-    const allQuestionSets = await ResearcherQuestionSetModel.find({
-      tag: req.query.tag,
-      willShowTill: { $gt: Date.now() }
-    });
-    return res.status(200).json({
-      QuestionSets: allQuestionSets
-    });
-  } catch (error) {
-    return res.status(500).json({
-      success: false,
-      message: 'Internal Server Error',
-      error
-    });
-  }
-};
+module.exports.showListOfQuestions = asyncHandler(async (req, res) => {
+  const questionSets = await ResearcherQuestionSetModel.find({
+    tag: req.query.tag,
+    willShowTill: { $gt: Date.now() }
+  });
+  return res.status(200).json({
+    success: true,
+    count: questionSets.length,
+    data: questionSets
+  });
+});
 
-module.exports.rateQuestionList = async (req, res) => {
-  try {
-    const selectedQuestionSet = await ResearcherQuestionSetModel.findOne({
-      _id: req.query.id
-    });
-    if (selectedQuestionSet) {
-      selectedQuestionSet.stars.push(req.query.star);
-      await selectedQuestionSet.save();
-      return res.status(200).json({
-        updatedQuestionSet: selectedQuestionSet
-      });
-    } else {
-      return res.status(400).json({
-        success: false,
-        message: 'No Question Set Found in this ID'
-      });
-    }
-  } catch (error) {
-    return res.status(500).json({
-      success: false,
-      message: 'Internal Server Error',
-      error
-    });
+module.exports.rateQuestionList = asyncHandler(async (req, res, next) => {
+  const questionSet = await ResearcherQuestionSetModel.findOne({
+    _id: req.query.questionSetID
+  });
+  if (!questionSet) {
+    return next(
+      new ErrorResponse(
+        `No question set found in this Id: ${req.query.id}`,
+        400
+      )
+    );
   }
-};
 
-module.exports.answerQuestions = async (req, res) => {
-  try {
-    const audienceID = req.user._id;
-    const QuestionSetID = req.params.questionSetID;
-    const questionSet = await ResearcherQuestionSetModel.findOne({
-      _id: QuestionSetID
-    });
-    if (questionSet) {
-      const { numberOfQuestions, researcherID } = questionSet;
-      const researcherInfo = await AccountModel.findOne({ _id: researcherID });
-      const answers = [];
-      const NumberOfQuestionsInt = parseInt(numberOfQuestions, 10);
-      for (let i = 0; i < NumberOfQuestionsInt; i++) {
-        console.log(req.body[`ans${i + 1}`]);
-        if (req.body[`ans${i + 1}`] === undefined) answers.push('');
-        else answers.push(req.body[`ans${i + 1}`]);
-      }
-      const AudiencesAnswer = new AudienceQuestionSubmitModel({
-        researcherID,
-        audienceID,
-        QuestionSetID,
-        answers
-      });
-      await AudiencesAnswer.save();
-      const emailResponse = await thankYouMsgFromResearcherToAudience(
-        researcherInfo.email,
-        req.user.email,
-        req.user.name
-      );
-      return res.status(200).json({
-        success: true,
-        AudiencesAnswer,
-        emailResponse
-      });
-    } else {
-      return res.status(400).json({
-        success: false,
-        message: 'No Question Set Found in this ID'
-      });
-    }
-  } catch (error) {
-    return res.status(500).json({
-      success: false,
-      message: 'Internal Server Error',
-      error
-    });
-  }
-};
+  questionSet.stars.push(parseInt(req.query.star, 10));
+  await questionSet.save();
+  return res.status(200).json({
+    success: true,
+    data: questionSet
+  });
+});
 
-module.exports.howManyUserReached = async (req, res) => {
-  try {
-    const QuestionSetID = req.params.questionSetID;
-    const answers = await AudienceQuestionSubmitModel.find({ QuestionSetID });
-    let map = new Map();
-    let counter = 0;
-    for (let i = 0; i < answers.length; i++) {
-      if (map.has(answers[i].audienceID)) continue;
-      counter++;
-    }
-    return res.status(200).json({
-      success: true,
-      howManyUserReachedInThisQuestionSet: counter
-    });
-  } catch (error) {
-    return res.status(500).json({
-      success: false,
-      message: 'Internal Server Error',
-      error
-    });
+module.exports.answerQuestions = asyncHandler(async (req, res, next) => {
+  const audienceID = req.user._id;
+  const questionSetID = req.params.questionSetID;
+  const questionSet = await ResearcherQuestionSetModel.findOne({
+    _id: questionSetID
+  });
+  if (!questionSet) {
+    return next(
+      new ErrorResponse(
+        `No question set found in this Id: ${req.params.questionSetID}`,
+        400
+      )
+    );
   }
-};
+
+  const { numberOfQuestions, researcherID } = questionSet;
+  const researcherInfo = await AccountModel.findOne({
+    _id: researcherID
+  }).select(['-password']);
+
+  const answers = [];
+  for (let i = 0; i < numberOfQuestions; i++) {
+    if (req.body[`ans${i + 1}`] === undefined) answers.push('');
+    else answers.push(req.body[`ans${i + 1}`]);
+  }
+  const audienceResponse = {
+    researcherID,
+    audienceID,
+    questionSetID,
+    answers
+  };
+  await AudienceQuestionSubmitModel.create(audienceResponse);
+  const emailResponse = await thankYouMsgFromResearcherToAudience(
+    researcherInfo.email,
+    req.user.email,
+    req.user.name
+  );
+  return res.status(201).json({
+    success: true,
+    response: audienceResponse,
+    emailResponse: emailResponse.response
+  });
+});
+
+module.exports.userReached = asyncHandler(async (req, res) => {
+  const { questionSetID } = req.params;
+  const answers = await AudienceQuestionSubmitModel.find({ questionSetID });
+  let map = new Map();
+  let counter = 0;
+  for (let i = 0; i < answers.length; i++) {
+    if (map.has(answers[i].audienceID)) continue;
+    counter++;
+  }
+  return res.status(200).json({
+    success: true,
+    count: counter.length,
+    userReached: counter
+  });
+});
+
+module.exports.seeResponse = asyncHandler(async (req, res, next) => {
+  const answers = await AudienceQuestionSubmitModel.find({
+    questionSetID: req.query.questionSetID,
+    audienceID: req.user._id
+  });
+  return res.status(200).json({
+    success: true,
+    count: answers.length,
+    data: answers
+  });
+});
+
+module.exports.updateResponse = asyncHandler(async (req, res, next) => {
+  const { responseID } = req.params;
+  const response = await AudienceQuestionSubmitModel.findOne({
+    _id: responseID,
+    audienceID: req.user._id
+  });
+  const answers = response.answers;
+  const data = req.body;
+  for (let i = 1; i <= response.answers.length; i++) {
+    if (data[`ans${i}`]) answers[i - 1] = data[`ans${i}`];
+  }
+  const updatedData = await AudienceQuestionSubmitModel.findByIdAndUpdate(
+    responseID,
+    { answers },
+    {
+      new: true,
+      runValidators: true
+    }
+  );
+  return res.status(200).json({
+    success: true,
+    message: 'data is successfully updated',
+    data: updatedData
+  });
+});

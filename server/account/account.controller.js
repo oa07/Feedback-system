@@ -14,6 +14,7 @@ const asyncHandler = require('../middleware/async');
 const ErrorResponse = require('../utils/errorResponse');
 
 module.exports.register = asyncHandler(async (req, res, next) => {
+  logger.info(`URL: ${req.url}`);
   const data = req.body;
   const { error } = signupDataValidation(data);
   if (error)
@@ -56,6 +57,7 @@ module.exports.register = asyncHandler(async (req, res, next) => {
 });
 
 module.exports.login = asyncHandler(async (req, res, next) => {
+  logger.info(`URL: ${req.url}`);
   const { error } = loginDataValidation(req.body);
   if (error)
     return next(new ErrorResponse(error.details.map(err => err.message), 400));
@@ -68,7 +70,7 @@ module.exports.login = asyncHandler(async (req, res, next) => {
   const accessToken = jwt.sign(payLoad, config.jwtSecret, {
     expiresIn: '100d'
   });
-  return res.json({ success: true, accessToken });
+  return res.json({ success: true, accessToken, userID: req.user._id });
 });
 
 // GET /auth/allUserInfo
@@ -78,12 +80,12 @@ module.exports.singleAccountInfo = asyncHandler(async (req, res) => {
   return res.status(200).json({ users });
 });
 
-// DELETE /auth/deleteAccount
-// protected route
-module.exports.deleteAccount = asyncHandler(async (req, res) => {
-  await AuthModel.findByIdAndDelete({ _id: req.user._id });
-  req.user = undefined;
-  return res.status(200).json({
-    message: 'account Deleted Successfully'
-  });
-});
+// // DELETE /auth/deleteAccount
+// // protected route
+// module.exports.deleteAccount = asyncHandler(async (req, res) => {
+//   await AuthModel.findByIdAndDelete({ _id: req.user._id });
+//   req.user = undefined;
+//   return res.status(200).json({
+//     message: 'account Deleted Successfully'
+//   });
+// });

@@ -9,8 +9,11 @@ const asyncHandler = require('../middleware/async');
 const ErrorResponse = require('../utils/errorResponse');
 const { AudienceQuestionSubmitModel } = require('./audience.model');
 const { AccountModel } = require('../account/account.model');
+const logger = require('../../config/logger');
 
 module.exports.showListOfQuestions = asyncHandler(async (req, res) => {
+  logger.info(`URL: ${req.url}`);
+
   const questionSets = await ResearcherQuestionSetModel.find({
     tag: req.query.tag,
     willShowTill: { $gt: Date.now() }
@@ -23,13 +26,14 @@ module.exports.showListOfQuestions = asyncHandler(async (req, res) => {
 });
 
 module.exports.rateQuestionList = asyncHandler(async (req, res, next) => {
+  logger.info(`URL: ${req.url}`);
   const questionSet = await ResearcherQuestionSetModel.findOne({
     _id: req.query.questionSetID
   });
   if (!questionSet) {
     return next(
       new ErrorResponse(
-        `No question set found in this Id: ${req.query.id}`,
+        `No question set found in this Id: ${req.query.questionSetID}`,
         400
       )
     );
@@ -44,6 +48,8 @@ module.exports.rateQuestionList = asyncHandler(async (req, res, next) => {
 });
 
 module.exports.answerQuestions = asyncHandler(async (req, res, next) => {
+  logger.info(`URL: ${req.url}`);
+
   const audienceID = req.user._id;
   const questionSetID = req.params.questionSetID;
   const questionSet = await ResearcherQuestionSetModel.findOne({
@@ -57,7 +63,6 @@ module.exports.answerQuestions = asyncHandler(async (req, res, next) => {
       )
     );
   }
-
   const { numberOfQuestions, researcherID } = questionSet;
   const researcherInfo = await AccountModel.findOne({
     _id: researcherID
@@ -74,7 +79,9 @@ module.exports.answerQuestions = asyncHandler(async (req, res, next) => {
     questionSetID,
     answers
   };
-  await AudienceQuestionSubmitModel.create(audienceResponse);
+  const dbsavedData = await AudienceQuestionSubmitModel.create(
+    audienceResponse
+  );
   const emailResponse = await thankYouMsgFromResearcherToAudience(
     researcherInfo.email,
     req.user.email,
@@ -82,12 +89,14 @@ module.exports.answerQuestions = asyncHandler(async (req, res, next) => {
   );
   return res.status(201).json({
     success: true,
-    response: audienceResponse,
+    response: dbsavedData,
     emailResponse: emailResponse.response
   });
 });
 
 module.exports.userReached = asyncHandler(async (req, res) => {
+  logger.info(`URL: ${req.url}`);
+
   const { questionSetID } = req.params;
   const answers = await AudienceQuestionSubmitModel.find({ questionSetID });
   let map = new Map();
@@ -104,6 +113,8 @@ module.exports.userReached = asyncHandler(async (req, res) => {
 });
 
 module.exports.seeResponse = asyncHandler(async (req, res, next) => {
+  logger.info(`URL: ${req.url}`);
+
   const answers = await AudienceQuestionSubmitModel.find({
     questionSetID: req.query.questionSetID,
     audienceID: req.user._id
@@ -116,6 +127,8 @@ module.exports.seeResponse = asyncHandler(async (req, res, next) => {
 });
 
 module.exports.updateResponse = asyncHandler(async (req, res, next) => {
+  logger.info(`URL: ${req.url}`);
+
   const { responseID } = req.params;
   const response = await AudienceQuestionSubmitModel.findOne({
     _id: responseID,
@@ -138,5 +151,21 @@ module.exports.updateResponse = asyncHandler(async (req, res, next) => {
     success: true,
     message: 'data is successfully updated',
     data: updatedData
+  });
+});
+
+// **********************************************************
+// ***************** For testing purpose ********************
+// **********************************************************
+
+module.exports.checkForASet = asyncHandler(async (req, res, next) => {
+  const questionSet = await ResearcherQuestionSetModel.findById(req.params.id);
+  if (questionSet)
+    return res.status(200).json({
+      success: true
+    });
+
+  return res.status(400).json({
+    success: false
   });
 });

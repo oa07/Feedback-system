@@ -2,6 +2,7 @@ const { AudienceQuestionSubmitModel } = require('../audience/audience.model');
 const { ResearcherQuestionSetModel } = require('./researcher.model');
 const asyncHandler = require('../middleware/async');
 const ErrorResponse = require('../utils/errorResponse');
+const logger = require('../../config/logger');
 
 const undefinedOrEmpty = data => {
   return data === undefined || data === '';
@@ -14,12 +15,15 @@ const makeArray = data => {
 };
 
 module.exports.submitQuestions = asyncHandler(async (req, res) => {
+  logger.info(`URL: ${req.url}`);
+
   const { numberOfQuestions } = req.body;
   const tag = makeArray(req.body.tag);
   const willShowTill = new Date(
     Date.now() + req.body.willShowTill * 24 * 60 * 60 * 1000
   );
   const questionSet = {
+    _id: req.body._id,
     numberOfQuestions,
     tag,
     willShowTill,
@@ -66,14 +70,16 @@ module.exports.submitQuestions = asyncHandler(async (req, res) => {
     }
     questionSet.questions.push(questionAnswer);
   }
-  await ResearcherQuestionSetModel.create(questionSet);
+  const dbSavedData = await ResearcherQuestionSetModel.create(questionSet);
   return res.status(201).json({
     success: true,
-    questionSet: questionSet
+    data: dbSavedData
   });
 });
 
 module.exports.seeAudienceReview = asyncHandler(async (req, res) => {
+  logger.info(`URL: ${req.url}`);
+
   const response = await AudienceQuestionSubmitModel.find({
     researcherID: req.user._id,
     questionSetID: req.query.questionSetID
@@ -86,6 +92,8 @@ module.exports.seeAudienceReview = asyncHandler(async (req, res) => {
 });
 
 module.exports.seeValidAudienceReview = asyncHandler(async (req, res) => {
+  logger.info(`URL: ${req.url}`);
+
   const validResponse = await AudienceQuestionSubmitModel.find({
     researcherID: req.user._id,
     questionSetID: req.query.questionSetID,
@@ -99,6 +107,8 @@ module.exports.seeValidAudienceReview = asyncHandler(async (req, res) => {
 });
 
 module.exports.top200AudienceInAQuestionSet = asyncHandler(async (req, res) => {
+  logger.info(`URL: ${req.url}`);
+
   const { questionSetID } = req.query;
 
   let responses = await AudienceQuestionSubmitModel.find({
@@ -123,6 +133,8 @@ module.exports.top200AudienceInAQuestionSet = asyncHandler(async (req, res) => {
 });
 
 module.exports.totalQuesSetCount = asyncHandler(async (req, res, next) => {
+  logger.info(`URL: ${req.url}`);
+
   const review = await AudienceQuestionSubmitModel.find({
     researcherID: req.user._id
   });
@@ -150,6 +162,8 @@ module.exports.totalQuesSetCount = asyncHandler(async (req, res, next) => {
 });
 
 module.exports.analysisReport = asyncHandler(async (req, res, next) => {
+  logger.info(`URL: ${req.url}`);
+
   const { questionSetID } = req.query;
   const quesSet = await ResearcherQuestionSetModel.findOne({
     _id: questionSetID
@@ -204,6 +218,8 @@ module.exports.analysisReport = asyncHandler(async (req, res, next) => {
 });
 
 module.exports.filterBasedOnTag = asyncHandler(async (req, res) => {
+  logger.info(`URL: ${req.url}`);
+
   const questionSets = await ResearcherQuestionSetModel.find({
     tag: req.query.tag,
     researcherID: req.user._id

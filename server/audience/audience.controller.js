@@ -153,19 +153,3 @@ module.exports.updateResponse = asyncHandler(async (req, res, next) => {
     data: updatedData
   });
 });
-
-// **********************************************************
-// ***************** For testing purpose ********************
-// **********************************************************
-
-module.exports.checkForASet = asyncHandler(async (req, res, next) => {
-  const questionSet = await ResearcherQuestionSetModel.findById(req.params.id);
-  if (questionSet)
-    return res.status(200).json({
-      success: true
-    });
-
-  return res.status(400).json({
-    success: false
-  });
-});

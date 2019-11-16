@@ -52,18 +52,6 @@ describe('audience module', () => {
         })
         .catch(done);
     });
-    describe('checking for the question set', () => {
-      it('should find that particlar question set', done => {
-        request(app)
-          .get('/api/v1/audience/checkForASet/5dce1de072c08c2fec5863ba')
-          .set('authorization', `bearer ${accessToken}`)
-          .expect(200)
-          .then(res => {
-            done();
-          })
-          .catch(done);
-      });
-    });
 
     describe('Show Question Set', () => {
       it('should Show Question Set on a certain tag', done => {
@@ -122,6 +110,7 @@ describe('audience module', () => {
           .catch(done);
       });
     });
+
     describe('See my response - Audience', () => {
       it('should Show See my response - Audience', done => {
         request(app)
@@ -136,6 +125,7 @@ describe('audience module', () => {
           .catch(done);
       });
     });
+
     describe('update response', () => {
       it('should update response', done => {
         request(app)

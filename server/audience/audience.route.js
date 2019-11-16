@@ -34,11 +34,4 @@ router.put(
   controllers.updateResponse
 );
 
-// for testing
-router.get(
-  '/checkForASet/:id',
-  [auth, audienceAccess],
-  controllers.checkForASet
-);
-
 module.exports = router;

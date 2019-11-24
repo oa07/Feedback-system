@@ -11,7 +11,8 @@ const envSchema = Joi.object({
   MONGODB_HOST: Joi.string().required(),
   JWT_SECRET: Joi.string().required(),
   EMAIL_ID: Joi.string().required(),
-  EMAIL_PASSWORD: Joi.string().required()
+  EMAIL_PASSWORD: Joi.string().required(),
+  MONGOURI_TEST: Joi.string().required()
 })
   .unknown()
   .required();
@@ -25,5 +26,6 @@ module.exports = {
   mongodbHost: validatedEnv.MONGODB_HOST,
   jwtSecret: validatedEnv.JWT_SECRET,
   emailID: validatedEnv.EMAIL_ID,
-  emailPassword: validatedEnv.EMAIL_PASSWORD
+  emailPassword: validatedEnv.EMAIL_PASSWORD,
+  mongoUrlTest: validatedEnv.MONGOURI_TEST
 };

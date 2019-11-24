@@ -3,8 +3,10 @@ const config = require('./config/config');
 const app = require('./config/express');
 const logger = require('./config/logger');
 
+const dbURI = config.env === 'test' ? config.mongoUrlTest : config.mongodbHost;
+
 mongoose.connect(
-  config.mongodbHost,
+  dbURI,
   {
     useNewUrlParser: true,
     useCreateIndex: true,

@@ -1,0 +1,172 @@
+@import url("https://fonts.googleapis.com/css?family=Roboto&display=swap:400,500,700");
+*,
+*::before,
+*::after {
+  margin: 0px;
+  padding: 0px;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+}
+
+body {
+  font-family: 'Roboto', sans-serif;
+  font-size: 18px;
+  background: #f7f6f1;
+}
+
+.navbar {
+  border-radius: 0px;
+}
+
+p {
+  padding: 0px;
+  margin: 0px;
+}
+
+input:focus {
+  outline: none;
+}
+
+button:focus {
+  -webkit-transform: translateY(0px);
+      -ms-transform: translateY(0px);
+       -o-transform: translateY(0px);
+          transform: translateY(0px);
+}
+
+button:active {
+  -webkit-transform: translateY(2px);
+      -ms-transform: translateY(2px);
+       -o-transform: translateY(2px);
+          transform: translateY(2px);
+}
+
+.Login {
+  min-height: 100vh;
+  padding: 5% 10px;
+}
+
+.Login form {
+  background: white;
+  -webkit-box-shadow: 0 5px 25px 0 rgba(2, 2, 2, 0.07);
+          box-shadow: 0 5px 25px 0 rgba(2, 2, 2, 0.07);
+  border-radius: 5px;
+  width: 300px;
+  margin: 0 auto;
+  padding: 1.5rem;
+  padding-bottom: 1rem;
+  border: 1px solid #333333;
+}
+
+@media (max-width: 350px) {
+  .Login form {
+    width: 100%;
+  }
+}
+
+.Login form .login__heading {
+  text-align: center;
+}
+
+.Login form .login__form .login__field {
+  padding-bottom: 1rem;
+  padding-left: 0.5rem;
+}
+
+.Login form .login__form .login__field .login__field_heading {
+  font-size: 1.3rem;
+  padding-bottom: 0.5rem;
+  font-weight: 700;
+}
+
+.Login form .login__form .login__field .login__field_input input {
+  border: 1px solid #333333;
+  padding: 0.5rem;
+  border-radius: 3px;
+  width: 97%;
+}
+
+.Login form .login__form .login__field .login__field_input .forget_password {
+  padding-top: 5px;
+  text-align: right;
+  padding-right: 8px;
+}
+
+.Login form .login__form .login__field .login__field_input .forget_password p {
+  font-size: 1rem;
+}
+
+.Login form .login__form .submit-btn {
+  text-align: center;
+}
+
+.Login form .login__form .submit-btn button {
+  font-size: 1.5rem;
+  margin: 0 1.2rem 1.2rem;
+  padding: 0.5rem 1.5rem;
+  border: none;
+  background: #13ce66;
+  outline: none;
+  color: white;
+}
+
+.Login form .login__form .register {
+  border-top: 1px solid #6b6b6b;
+  padding-top: 0.5rem;
+  margin-top: 1rem;
+  text-align: center;
+}
+
+.Login form .login__form .register p {
+  color: gray;
+  font-size: 1rem;
+}
+
+.socialMediaIcons {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-wrap: wrap;
+      -ms-flex-wrap: wrap;
+          flex-wrap: wrap;
+  -webkit-box-pack: space-evenly;
+  -webkit-justify-content: space-evenly;
+      -ms-flex-pack: space-evenly;
+          justify-content: space-evenly;
+}
+
+.socialMediaIcons .fa {
+  padding: 1rem;
+  font-size: 1.2rem;
+  width: 30px;
+  height: 30px;
+  text-align: center;
+  text-decoration: none;
+  border-radius: 50%;
+  margin: 1rem 2px;
+}
+
+.socialMediaIcons .fa:hover {
+  opacity: 0.9;
+}
+
+.socialMediaIcons .fa-facebook {
+  background: #3b5998;
+  color: white;
+}
+
+.socialMediaIcons .fa-instagram {
+  background: #125688;
+  color: white;
+}
+
+.socialMediaIcons .fa-google {
+  background: #dd4b39;
+  color: white;
+}
+
+.socialMediaIcons .fa-twitter {
+  background: #359ceb;
+  color: white;
+}

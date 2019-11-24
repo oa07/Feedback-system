@@ -39,7 +39,6 @@ module.exports.seeDisapprovedUsers = asyncHandler(async (req, res) => {
   const validAudiences = await AudienceQuestionSubmitModel.find({
     approved: true
   });
-  console.log(audiences, validAudiences);
   let map = new Map();
   for (let i = 0; i < validAudiences.length; i++) {
     if (map.has(validAudiences[i].audienceID)) continue;

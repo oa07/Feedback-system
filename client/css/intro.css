@@ -1,0 +1,51 @@
+@import url("https://fonts.googleapis.com/css?family=Roboto&display=swap:400,500,700");
+*,
+*::before,
+*::after {
+  margin: 0px;
+  padding: 0px;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+}
+
+body {
+  font-family: 'Roboto', sans-serif;
+  font-size: 18px;
+  background: #f7f6f1;
+}
+
+.navbar {
+  border-radius: 0px;
+}
+
+p {
+  padding: 0px;
+  margin: 0px;
+}
+
+input:focus {
+  outline: none;
+}
+
+button:focus {
+  -webkit-transform: translateY(0px);
+      -ms-transform: translateY(0px);
+       -o-transform: translateY(0px);
+          transform: translateY(0px);
+}
+
+button:active {
+  -webkit-transform: translateY(2px);
+      -ms-transform: translateY(2px);
+       -o-transform: translateY(2px);
+          transform: translateY(2px);
+}
+
+.topHeading {
+  text-align: center;
+  padding: 5% 10px;
+}
+
+.topHeading h1 {
+  letter-spacing: 2px;
+}
